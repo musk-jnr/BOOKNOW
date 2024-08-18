@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpg" href="https://www.zaatu.com/wp-content/uploads/2022/05/ZAATU-Web-Art1593-1600-1.jpg">
+    <title>Booking Form</title>
+    <style>
+        body {
+            background-image: url('https://www.zaatu.com/wp-content/uploads/2022/05/ZAATU-Web-Art1593-1600-1.jpg');
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header, .footer {
+            background-color: blue;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        .content {
+            background-color: rgba(255, 255, 255, 0.8);
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 50px 35px rgba(0, 0, 1, 0.9);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 90%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .submit-button {
+            text-align: center;
+        }
+        .submit-button input {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        table {
+            width: 700px;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .contact .wrapper {
+            display: grid;
+            gap: 25px;
+            
+          }
+          
+          .contact-form {
+            background-color: var(--seashell);
+            padding: 20px;
+          }
+          
+          .input-field {
+            background-color: var(--white);
+            padding: 10px;
+            margin-block-end: 15px;
+            outline: none;
+            border-block-end: 2px solid transparent;
+          }
+          
+          .input-field:focus { border-color: var(--old-rose); }
+          
+          textarea.input-field {
+            resize: vertical;
+            min-height: 120px;
+            height: 120px;
+            max-height: 200px;
+          }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="header">
+        <h1>Reservation Form</h1>
+        <h3>Accra Technical University - Computer Science Department</h3>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h2 style="color: #007bff; text-align: center;">Reservation Request</h2>
+        <form action="/submit_booking" method="POST">
+            <div class="form-group">
+                <label for="users">choose user:</label>
+                <select id="users" name="users" required>
+                    <option value="lecturer">lecturer</option>
+                    <option value="course_rep">course rep</option>
+                    <option value="T.A">T.A</option>
+                    <option value="HOD">H.O.D</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="reservation_for">Reservation For:</label>
+                <select id="reservation_for" name="reservation_for" required>
+                    <option value="device">Device</option>
+                    <option value="classroom">Classroom</option>
+                    <option value="both">Both</option>
+                </select>
+            </div>
+
+            <div id="device_booking" style="display: none;">
+                <div class="device-group">
+                    <div class="form-group">
+                        <label for="device_type">Device Type:</label>
+                        <select id="device_type" name="device_type[]" required>
+                            <option value="Speakers and Microphone">Speakers and Microphone</option>
+                            <option value="Projectors">Projectors</option>
+                            <option value="LED Pointers">LED Pointers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking_date">Booking Date:</label>
+                        <input type="date" id="booking_date" name="booking_date[]" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking_time">Booking Time:</label>
+                        <input type="time" id="booking_time" name="booking_time[]" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration (in hours, max 2.5 hours):</label>
+                        <input type="number" id="duration" name="duration[]" step="0.1" max="2.5" required>
+                    </div>
+                </div>
+                <button type="button" onclick="addDevice()">Add Another Device</button>
+            </div>
+
+            <div id="classroom_booking" style="display: none;">
+                <div class="form-group">
+                    <label for="classroom">Classroom:</label>
+                    <select id="classroom" name="classroom" required>
+                        <option value="F1">F1</option>
+                        <option value="F3">F3</option>
+                        <option value="T2">T2</option>
+                        <option value="T3">T3</option>
+                        <option value="Computer lab">Computer lab</option>
+                    </select>
+                </div>
+                <table id="classroom_details" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Features</th>
+                            <th>Location</th>
+                            <th>Available Days</th>
+                            <th>Available Time</th>
+                            <th>Duration</th>
+                            <th>Capacity</th>
+                            <th>Notice</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-classroom="F1">
+                            <td>F1</td>
+                            <td>Projectors, Whiteboard</td>
+                            <td>Engineering block-first floor</td>
+                            <td>Thursday</td>
+                            <td>6:00 PM to 8:00 PM</td>
+                            <td>Max 2.5 hours</td>
+                            <td>200</td>
+                            <td> -- </td>
+
+                        </tr>
+                        <tr data-classroom="Computer lab">
+                            <td>Computer lab</td>
+                            <td>Projectors, Whiteboard,60 working computers</td>
+                            <td>Computer science block-first floor</td>
+                            <td>Thursday</td>
+                            <td>6:00 PM to 8:00 PM</td>
+                            <td>Max 2.5 hours</td>
+                            <td>200</td>
+                            <td>This lab will only be allowed for booking if you have permission letter from COMPSSA HOD  </td>
+                        </tr>
+                        <tr data-classroom="F3">
+                            <td>F3</td>
+                            <td>Whiteboard</td>
+                            <td>Engineering block-3rd floor</td>
+                            <td>Friday</td>
+                            <td>7:45 PM</td>
+                            <td>Max 2.5 hours</td>
+                            <td>300</td>
+                            <td>----</td>
+                        </tr>
+                        <tr data-classroom="T2">
+                            <td>T2</td>
+                            <td>Whiteboard</td>
+                            <td>Engineering block, 3rd floor</td>
+                            <td>Friday</td>
+                            <td>3:45 PM to 5:00 PM</td>
+                            <td>Max 2.5 hours</td>
+                            <td>300</td>
+                            <td> -- </td>
+                        </tr>
+                        <tr data-classroom="T3">
+                            <td>T3</td>
+                            <td>Whiteboard</td>
+                            <td>Engineering block, 2nd floor</td>
+                            <td>Friday</td>
+                            <td>5:45 PM</td>
+                            <td>Max 2.5 hours</td>
+                            <td>200</td>
+                            <td> -- </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <label for="purpose">Purpose of Booking:</label>
+                <textarea id="purpose" name="purpose" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="fullname">Full Name:</label>
+                <input type="text" id="fullname" name="fullname" required>
+            </div>
+            <div class="form-group">
+                <label for="user_index">Index Number:</label>
+                <input type="text" id="user_index" name="user_index" required>
+            </div>
+            <div class="form-group">
+                <label for="user_phone">Phone Number:</label>
+                <input type="text" id="user_phone" name="user_phone" required>
+            </div>
+            <div class="form-group">
+                <label for="user_email">Email:</label>
+                <input type="email" id="user_email" name="user_email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="unique_code">Unique Code:</label>
+                <input type="text" id="unique_code" name="unique_code" readonly>
+                <button type="button" onclick="generateUniqueCode()">Generate Code</button>
+            </div>
+            <div>
+                <button type="button" onclick="generatePDF()">Download Request Form</button>
+            </div>
+
+            <div class="submit-button">
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+    <section class="section contact" id="contact" aria-label="contact">
+        <div class="container">
+          <div class="contact-card">
+            <div class="card-content">
+              <h3 class="h3 card-title">Contact Us</h3>
+              <p class="card-text">For any inquiries or assistance, please feel free to reach out to us.</p>
+              <ul class="contact-list">
+                <li class="contact-item">
+                  <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+                  <address class="address">Accra Technical University, Accra, Ghana</address>
+                </li>
+                <li class="contact-item">
+                  <ion-icon name="call-outline" aria-hidden="true"></ion-icon>
+                  <a href="tel:+0123456789" class="contact-link">+233531126534</a>
+                </li>
+                <li class="contact-item">
+                  <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
+                  <a href="mailto:info@atu.edu.gh" class="contact-link">info@atu.edu.gh</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Contact us at <a href="mailto:info@atu.edu.gh">info@atu.edu.gh</a> for more information.</p>
+        <p>system developed by   <a href="mailto:emperorflinks@gmail.com">LIT cyber group of companies  </p>
+    </div>
+
+    <script>
+
+        document.getElementById('reservation_for').addEventListener('change', function() {
+            var value = this.value;
+            document.getElementById('device_booking').style.display = (value === 'device' || value === 'both') ? 'block' : 'none';
+            document.getElementById('classroom_booking').style.display = (value === 'classroom' || value === 'both') ? 'block' : 'none';
+        });
+
+        document.getElementById('classroom').addEventListener('change', function() {
+            var selectedClassroom = this.value;
+            var rows = document.querySelectorAll('#classroom_details tbody tr');
+            rows.forEach(function(row) {
+                row.style.display = (row.getAttribute('data-classroom') === selectedClassroom) ? 'table-row' : 'none';
+            });
+            document.getElementById('classroom_details').style.display = 'table';
+        });
+
+        function addDevice() {
+            var deviceGroup = document.querySelector('.device-group');
+            var newDeviceGroup = deviceGroup.cloneNode(true);
+            document.getElementById('device_booking').appendChild(newDeviceGroup);
+        }
+        function generateUniqueCode() {
+            var uniqueCode = 'ATU_compsaa-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+            document.getElementById('unique_code').value = uniqueCode;
+        }
+
+        
+        
+        
+    </script>
+</body>
+</html>
